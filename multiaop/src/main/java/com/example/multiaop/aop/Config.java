@@ -21,13 +21,24 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 多数据源配置文件
+ * 包括SqlsessionFactory、SqlsessionTemplate、多数据源事务管理器atomik
+*/
 @Configuration
 public class Config {
+
     @Autowired
     DbConfigOne dbConfigOne;
     @Autowired
     DbConfigTwo dbConfigTwo;
 
+    /**
+     * 第一个库数据源信息注入到Spring
+     * @param dbConfigOne 与配置文件搭配第一个数据源信息
+     * @return
+     * @throws SQLException
+     */
     @Bean("test")
     public DataSource testdataSource(DbConfigOne dbConfigOne) throws SQLException {
         MysqlXADataSource mysqlXaDataSource = new MysqlXADataSource();
@@ -38,11 +49,16 @@ public class Config {
 
         AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
         xaDataSource.setXaDataSource(mysqlXaDataSource);
-        xaDataSource.setUniqueResourceName("test");
+        xaDataSource.setUniqueResourceName(dbConfigOne.getDbName());
         return xaDataSource;
     }
 
-    //
+    /**
+     * 第二个库数据源信息注入到Spring
+     * @param dbConfigTwo
+     * @return
+     * @throws SQLException
+     */
     @Bean("icp")
     public DataSource icpdataSource(DbConfigTwo dbConfigTwo) throws SQLException {
         MysqlXADataSource mysqlXaDataSource = new MysqlXADataSource();
@@ -53,8 +69,25 @@ public class Config {
 
         AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
         xaDataSource.setXaDataSource(mysqlXaDataSource);
-        xaDataSource.setUniqueResourceName("icp");
+        xaDataSource.setUniqueResourceName(dbConfigTwo.getDbName());
         return xaDataSource;
+    }
+
+    /**
+     * 多数据源信息
+     * @return
+     * @throws SQLException
+     */
+    @Bean(name = "dynamicDataSource")
+    public DataSource dynamicDataSource() throws SQLException {
+        DynamicDatasource dynamicDataSource = new DynamicDatasource();
+        dynamicDataSource.setDefaultTargetDataSource(testdataSource(dbConfigOne));
+        Map<Object, Object> dbMap = new HashMap<Object, Object>();
+        dbMap.put("test", testdataSource(dbConfigOne));
+        dbMap.put("icp", icpdataSource(dbConfigTwo));
+        dynamicDataSource.setTargetDataSources(dbMap);
+
+        return dynamicDataSource;
     }
 
 
@@ -63,6 +96,10 @@ public class Config {
 //        return new DataSourceTransactionManager(testDatasource);
 //    }
 
+    /**
+     * atomikos事务配置信息
+     * @return
+     */
     @Bean(name = "atomikosTransactionManager")
     public UserTransactionManager atomikosTransactionManager() {
         UserTransactionManager atomikosTransactionManager = new UserTransactionManager();
@@ -92,6 +129,13 @@ public class Config {
     }
 
 
+    /**
+     * mybatis手动注入多数据源
+     * 注释部分为XML的位置
+     * @param dataSource
+     * @return
+     * @throws Exception
+     */
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dynamicDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
@@ -111,17 +155,5 @@ public class Config {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
-
-    @Bean(name = "dynamicDataSource")
-    public DataSource dynamicDataSource() throws SQLException {
-        DynamicDatasource dynamicDataSource = new DynamicDatasource();
-        dynamicDataSource.setDefaultTargetDataSource(testdataSource(dbConfigOne));
-        Map<Object, Object> dbMap = new HashMap<Object, Object>();
-        dbMap.put("test", testdataSource(dbConfigOne));
-        dbMap.put("icp", icpdataSource(dbConfigTwo));
-        dynamicDataSource.setTargetDataSources(dbMap);
-
-        return dynamicDataSource;
-    }
 
 }

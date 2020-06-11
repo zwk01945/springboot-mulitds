@@ -3,9 +3,7 @@ package com.example.multiaop.service;
 import com.example.multiaop.aop.DS;
 import com.example.multiaop.mapper.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.transaction.NotSupportedException;
@@ -24,7 +22,6 @@ public class testService {
 
     @Autowired
     private JtaTransactionManager transactionManager;
-
 
     public String selectAll() {
         List<Object> objects = objectMapper.selectRecords();

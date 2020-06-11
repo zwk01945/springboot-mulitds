@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @SpringBootConfiguration
 public class DbConfigOne {
 
+    private String dbName;
     private String jdbcUrl;
     private String username;
     private String password;
@@ -33,5 +34,13 @@ public class DbConfigOne {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
     }
 }

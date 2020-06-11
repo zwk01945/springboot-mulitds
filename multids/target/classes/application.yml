@@ -1,0 +1,19 @@
+
+server:
+  port: 5001
+spring:
+  application:
+    name: multiConf
+  datasource:
+    test:
+      username: TEST
+      password: 111111111
+      jdbc-url: jdbc:dm://192.168.3.4:5236/TEST
+      driver-class-name: dm.jdbc.driver.DmDriver
+    icp:
+      driver-class-name: dm.jdbc.driver.DmDriver
+      username: ICP_BA_BM
+      password: 111111111
+      jdbc-url: jdbc:dm://192.168.3.4:5236/ICP_BA_BM
+mybatis:
+  config-location: classpath:mapper/config/mabatis-config.xml

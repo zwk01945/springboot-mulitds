@@ -1,0 +1,21 @@
+server:
+  port: 5000
+spring:
+  application:
+    name: multiDatasource
+  datasource:
+    dynamic:
+      primary: test
+      strict: false
+      datasource:
+        test:
+          driver-class-name: dm.jdbc.driver.DmDriver
+          username: xxxxx
+          password: xxxxxx
+          url: jdbc:dm://xxxxx:xxxx/xxx
+        icp:
+          driver-class-name: dm.jdbc.driver.DmDriver
+          username: xxxxx
+          password: xxxxxxxx
+          url: jdbc:dm://xxxxxxx:xxx/xx
+

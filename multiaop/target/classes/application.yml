@@ -1,0 +1,16 @@
+server:
+  port: 5002
+spring:
+  application:
+    name: multiaop
+  datasource:
+    test:
+      username: root
+      password: 123456
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    icp:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: 123456
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/icp?serverTimezone=UTC

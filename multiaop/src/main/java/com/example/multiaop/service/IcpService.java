@@ -4,8 +4,7 @@ import com.example.multiaop.aop.multids.DS;
 import com.example.multiaop.mapper.IcpMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
 
 
 @Service("icpService")

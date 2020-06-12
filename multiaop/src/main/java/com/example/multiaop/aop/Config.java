@@ -1,9 +1,9 @@
 package com.example.multiaop.aop;
 
-import com.atomikos.icatch.jta.UserTransactionImp;
-import com.atomikos.icatch.jta.UserTransactionManager;
 import com.example.multiaop.aop.dbconfig.DbConfigOne;
 import com.example.multiaop.aop.dbconfig.DbConfigTwo;
+import com.example.multiaop.aop.multids.DynamicDatasource;
+import com.example.multiaop.aop.transcation.MultiDataSourceTransactionFactory;
 import com.mysql.cj.jdbc.MysqlXADataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -13,10 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import javax.transaction.SystemException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ import java.util.Map;
  * 包括SqlsessionFactory、SqlsessionTemplate、多数据源事务管理器atomik
 */
 @Configuration
+@EnableTransactionManagement(proxyTargetClass = true)
 public class Config {
 
     @Autowired
@@ -100,33 +100,33 @@ public class Config {
      * atomikos事务配置信息
      * @return
      */
-    @Bean(name = "atomikosTransactionManager")
-    public UserTransactionManager atomikosTransactionManager() {
-        UserTransactionManager atomikosTransactionManager = new UserTransactionManager();
-        atomikosTransactionManager.setForceShutdown(true);
-        return atomikosTransactionManager;
-    }
-
-    @Bean(name = "atomikosUserTransaction")
-    public UserTransactionImp atomikosUserTransaction() {
-        UserTransactionImp atomikosUserTransaction = new UserTransactionImp();
-        try {
-            atomikosUserTransaction.setTransactionTimeout(300);
-        } catch (SystemException e) {
-            e.printStackTrace();
-        }
-        return atomikosUserTransaction;
-    }
-
-    @Bean(name = "transactionManager")
-    public JtaTransactionManager transactionManager(UserTransactionManager atomikosTransactionManager,
-                                                    UserTransactionImp atomikosUserTransaction) {
-        JtaTransactionManager transactionManager = new JtaTransactionManager();
-        transactionManager.setTransactionManager(atomikosTransactionManager);
-        transactionManager.setUserTransaction(atomikosUserTransaction);
-        transactionManager.setAllowCustomIsolationLevels(true);
-        return transactionManager;
-    }
+//    @Bean(name = "atomikosTransactionManager")
+//    public UserTransactionManager atomikosTransactionManager() {
+//        UserTransactionManager atomikosTransactionManager = new UserTransactionManager();
+//        atomikosTransactionManager.setForceShutdown(true);
+//        return atomikosTransactionManager;
+//    }
+//
+//    @Bean(name = "atomikosUserTransaction")
+//    public UserTransactionImp atomikosUserTransaction() {
+//        UserTransactionImp atomikosUserTransaction = new UserTransactionImp();
+//        try {
+//            atomikosUserTransaction.setTransactionTimeout(300);
+//        } catch (SystemException e) {
+//            e.printStackTrace();
+//        }
+//        return atomikosUserTransaction;
+//    }
+//
+//    @Bean(name = "transactionManager")
+//    public JtaTransactionManager transactionManager(UserTransactionManager atomikosTransactionManager,
+//                                                    UserTransactionImp atomikosUserTransaction) {
+//        JtaTransactionManager transactionManager = new JtaTransactionManager();
+//        transactionManager.setTransactionManager(atomikosTransactionManager);
+//        transactionManager.setUserTransaction(atomikosUserTransaction);
+//        transactionManager.setAllowCustomIsolationLevels(true);
+//        return transactionManager;
+//    }
 
 
     /**
@@ -140,6 +140,7 @@ public class Config {
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dynamicDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
+        bean.setTransactionFactory(new MultiDataSourceTransactionFactory());
         // 指定扫描的xml文件所在位置，在配置文件里面配置，会报Invalid bound statement
 //        Resource[] resources = new PathMatchingResourcePatternResolver()
 //                .getResources("classpath:mybatis/*.xml");

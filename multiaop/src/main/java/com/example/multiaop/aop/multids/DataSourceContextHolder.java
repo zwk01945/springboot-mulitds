@@ -1,4 +1,4 @@
-package com.example.multiaop.aop;
+package com.example.multiaop.aop.multids;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

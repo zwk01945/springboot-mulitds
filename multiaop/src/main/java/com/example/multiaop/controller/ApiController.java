@@ -1,7 +1,7 @@
 package com.example.multiaop.controller;
 
 import com.example.multiaop.service.IcpService;
-import com.example.multiaop.service.testService;
+import com.example.multiaop.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
     @Autowired
-    testService testService;
+    TestService testService;
     @Autowired
     IcpService icpService;
 

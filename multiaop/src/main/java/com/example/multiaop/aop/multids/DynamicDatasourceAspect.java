@@ -1,4 +1,4 @@
-package com.example.multiaop.aop;
+package com.example.multiaop.aop.multids;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -20,7 +20,7 @@ public class DynamicDatasourceAspect {
 
     public static Logger logger = LoggerFactory.getLogger(DynamicDatasourceAspect.class);
 
-    @Before("@within(com.example.multiaop.aop.DS) || @annotation(com.example.multiaop.aop.DS)")
+    @Before("@within(com.example.multiaop.aop.multids.DS) || @annotation(com.example.multiaop.aop.multids.DS)")
     public void beforeSwitchDS(JoinPoint point) {
             logger.info("进去aspect切面");
             //获取需要访问的类的Class
@@ -47,7 +47,7 @@ public class DynamicDatasourceAspect {
         DataSourceContextHolder.setDbType(dataSource);
     }
 
-    @After("@within(com.example.multiaop.aop.DS) || @annotation(com.example.multiaop.aop.DS)")
+    @After("@within(com.example.multiaop.aop.multids.DS) || @annotation(com.example.multiaop.aop.multids.DS)")
     public void afterSwitchDS (JoinPoint point) {
         DataSourceContextHolder.clearDbType();
         logger.info("数据源移除成功");

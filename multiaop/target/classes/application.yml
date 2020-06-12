@@ -5,11 +5,13 @@ spring:
     name: multiaop
   datasource:
     test:
+      dbname: test
       username: root
       password: 123456
       jdbc-url: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC
       driver-class-name: com.mysql.cj.jdbc.Driver
     icp:
+      dbname: icp
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: 123456

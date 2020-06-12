@@ -2,6 +2,7 @@ package com.example.multiaop.aop.multids;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 public class DataSourceContextHolder {
 
@@ -14,7 +15,11 @@ public class DataSourceContextHolder {
         contextHolder.set(dbType);
     }
     public static String getDbType () {
-        return (String) contextHolder.get();
+        String dbType = (String) contextHolder.get();
+        if (StringUtils.isEmpty(dbType)) {
+            dbType = DEFAULT_DS;
+        }
+        return dbType;
     }
 
     public static void clearDbType() {

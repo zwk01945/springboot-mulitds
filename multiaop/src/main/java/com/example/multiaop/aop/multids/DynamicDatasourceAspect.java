@@ -34,12 +34,11 @@ public class DynamicDatasourceAspect {
             if (clazz.isAnnotationPresent(DS.class)) {
                 DS ds = clazz.getAnnotation(DS.class);
                 dataSource = ds.value();
-            } else {
-                Method method = clazz.getMethod(methodName, argClass);
-                if (method.isAnnotationPresent(DS.class)) {
-                    DS ds = method.getAnnotation(DS.class);
-                    dataSource = ds.value();
-                }
+            }
+            Method method = clazz.getMethod(methodName, argClass);
+            if (method.isAnnotationPresent(DS.class)) {
+                DS ds = method.getAnnotation(DS.class);
+                dataSource = ds.value();
             }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
